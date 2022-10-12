@@ -17,10 +17,10 @@ describe('1 - Teste a função fetchProducts', () => {
   });
   it('Teste se o retorno com o argumento computador é uma estrutura de dados igual ao objeto computadorSearch', async () => {
     const retorno = await fetchProducts('computador');
-    expect(retorno).toEqual('computadorSearch');
+    expect(retorno).toEqual(computadorSearch);
   });
   it('Teste se, ao chamar a função fetchProducts sem argumento, retorna um erro com mensagem', async () => {
     const retorno = await fetchProducts();
-    exect(retorno).toEqual(new Error('You must provide an url'));
+    expect(retorno).toEqual(new Error('You must provide an url'));
   });
 });
