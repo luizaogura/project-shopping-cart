@@ -72,4 +72,15 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-window.onload = () => { };
+const showItens = async () => {
+  const catchFetch = await fetchProducts('computador');
+  catchFetch.results.forEach((item) => {
+    const catchSection = document.querySelector('.items');
+    const createElementItem = createProductItemElement(item);
+    catchSection.appendChild(createElementItem);
+  });
+};
+
+window.onload = () => { 
+  showItens();
+};
