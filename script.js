@@ -16,9 +16,26 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
+const createProductItemElement = ({ id, title, thumbnail }) => {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item_id', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
+  return section;
+};
+
+// Remova o item do carrinho de compras ao clicar nele
+const cartItemClickListener = (e) => { 
+  e.target.remove();
+};
+
 // Função responsável por criar e retornar o elemento do produto.
 // Função que recupera o ID do produto passado como parâmetro.
-const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
+const getIdFromProductItem = (product) => product.querySelector('.item_id').innerText;
 
 // Função responsável por criar e retornar um item do carrinho.
 const createCartItemElement = ({ id, title, price }) => {
@@ -29,36 +46,30 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
- async function addItems(event) {
-  const getId = getIdFromProductItem(event.target.parentNode);
-  const completeList = await fetchItem(getId);
-  const carrinho = createCartItemElement(completeList);
-  getItems.appendChild(carrinho);
-}
-
-const createProductItemElement = ({ id, title, thumbnail }) => {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item_id', id));
-  section.appendChild(createCustomElement('span', 'item__title', title));
-  section.appendChild(createProductImageElement(thumbnail));
-  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-    section.appendChild(button);
-    button.addEventListener('click', addItems);
-
-  return section;
+const addItems = async () => {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((elemento) => elemento.addEventListener('click', async (event) => {
+    const resultadoFetchItem = await fetchItem(getIdFromProductItem(event.target.parentElement));
+    cartItems.appendChild(createCartItemElement(resultadoFetchItem));
+  }));
 };
 
 const showItems = async () => {
-  const catchFetch = await fetchProducts('computador');
-  catchFetch.results.forEach((item) => {
-    const catchSection = document.querySelector('.items');
-    const createElementItem = createProductItemElement(item);
-    catchSection.appendChild(createElementItem);
+  const items = document.querySelector('.items');
+  const resultadoFetchProducts = await fetchProducts('computador');
+  resultadoFetchProducts.results.forEach((elemento) => { 
+    const item = createProductItemElement(elemento);
+    items.appendChild(item);
   });
 };
 
+// Esvaziar carrinho de compras
+const emptyCart = document.querySelector('.empty-cart');
+emptyCart.addEventListener('click', () => {
+  getItems.innerHTML = '';
+});
+
 window.onload = () => { 
   showItems();
+  addItems();
 };
