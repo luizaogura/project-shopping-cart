@@ -16,6 +16,9 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
+// Adicione um texto de carregando durante uma requisição à API
+
+
 const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
@@ -56,7 +59,7 @@ const addItems = async () => {
   });
 };
 
-const addItemToShoppingCart = async () => {
+const addItemsToShoppingCart = async () => {
   const cartItems = document.querySelector('.cart__items');
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((botton) => botton.addEventListener('click', async (event) => {
@@ -67,6 +70,17 @@ const addItemToShoppingCart = async () => {
   }));
 };
 
+// Salve os itens adicionados no carrinho de compras no localStorage
+function saveItemsToLocalStorage() {
+  if (localStorage.length !== 0) {
+    const getLocalStorage = getSavedCartItems();
+    const objItem = JSON.parse(getLocalStorage);
+    objItem.forEach((element) => {
+      createCartItemElement(element);
+    });
+  }
+}
+
 // Esvaziar carrinho de compras
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
@@ -75,5 +89,6 @@ emptyCart.addEventListener('click', () => {
 
 window.onload = async () => { 
   await addItems();
-  await addItemToShoppingCart();
+  await addItemsToShoppingCart();
+  saveItemsToLocalStorage();
  };
