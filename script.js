@@ -1,7 +1,7 @@
 const getItems = document.querySelector('.cart__items');
 
-// Função responsável por criar e retornar o elemento de imagem do produto.
-const createProductImageElement = (imageSource) => {
+ // Função responsável por criar e retornar o elemento de imagem do produto.
+ const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -29,7 +29,7 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
 };
 
 // Remova o item do carrinho de compras ao clicar nele
-const cartItemClickListener = (e) => { 
+const cartItemClickListener = (e) => {
   e.target.remove();
 };
 
@@ -47,20 +47,24 @@ const createCartItemElement = ({ id, title, price }) => {
 };
 
 const addItems = async () => {
-  const buttons = document.querySelectorAll('.item__add');
-  buttons.forEach((elemento) => elemento.addEventListener('click', async (event) => {
-    const resultadoFetchItem = await fetchItem(getIdFromProductItem(event.target.parentElement));
-    cartItems.appendChild(createCartItemElement(resultadoFetchItem));
-  }));
+  const response = await fetchProducts('computador');
+  const section = document.querySelector('.items');
+  response.results.forEach((product) => {
+    const item = createProductItemElement(product);
+    item.className = 'item';
+    section.appendChild(item);
+  });
 };
 
-const showItems = async () => {
-  const items = document.querySelector('.items');
-  const resultadoFetchProducts = await fetchProducts('computador');
-  resultadoFetchProducts.results.forEach((elemento) => { 
-    const item = createProductItemElement(elemento);
-    items.appendChild(item);
-  });
+const addItemToShoppingCart = async () => {
+  const cartItems = document.querySelector('.cart__items');
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((botton) => botton.addEventListener('click', async (event) => {
+    const response = await fetchItem(getIdFromProductItem(event.target.parentElement));
+    cartItems.appendChild(createCartItemElement(response));
+    arrayProducts.push(event.target.parentElement.innerText);
+    handlerLocalStorage();
+  }));
 };
 
 // Esvaziar carrinho de compras
@@ -69,7 +73,7 @@ emptyCart.addEventListener('click', () => {
   getItems.innerHTML = '';
 });
 
-window.onload = () => { 
-  showItems();
-  addItems();
-};
+window.onload = async () => { 
+  await addItems();
+  await addItemToShoppingCart();
+ };

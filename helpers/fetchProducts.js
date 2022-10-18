@@ -1,12 +1,7 @@
-const fetchProducts = async (busca) => {
-  try {
-    const url = `https://api.mercadolibre.com/sites/MLB/search?q=${busca}`;
-    const request = await fetch(url);
-    const results = await request.json();
-    return results;
-} catch (error) {
-  throw new Error('You must provide an url');
-}
+const fetchProducts = async (item) => {
+  const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`);
+  const data = await response.json();
+  return data;
 };
 
 if (typeof module !== 'undefined') {
@@ -14,5 +9,3 @@ if (typeof module !== 'undefined') {
     fetchProducts,
   };
 }
-
-console.log(fetchProducts('computador'));
