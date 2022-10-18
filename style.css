@@ -150,5 +150,7 @@ body {
 
 .total-price {
   margin-top: 15px;
+  margin-bottom: 15px;
   text-align: center;
+  font-weight: 700;
 }

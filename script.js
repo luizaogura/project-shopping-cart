@@ -61,6 +61,7 @@ const createProductItemElement = ({ id, title, price, thumbnail }) => {
   return section;
 };
 
+// Adicionar informações do carrinho de compras no array 
 const cartInformation = () => {
   const textList = getItems.childNodes;
   const infoItems = [];
@@ -68,6 +69,7 @@ const cartInformation = () => {
   saveCartItems(JSON.stringify(infoItems));
 };
 
+// Calcule o valor total dos itens do carrinho de compras
 const calcPrice = () => {
   const totalPrice = document.querySelector('.total-price');
   let somaTotal = 0;
@@ -153,5 +155,5 @@ window.onload = async () => {
   await addItems();
   await addItemsToShoppingCart();
   saveItemsToLocalStorage();
-  totalPrice();
+  await totalPrice();
  };
