@@ -28,17 +28,16 @@ const createCustomElement = (element, className, innerText) => {
 
 // Adicione um texto de carregando durante uma requisição à API
 const pageLoading = () => {
-  const text = document.createElement('p');
-  text.innerText = 'carregando...';
-  text.className = 'loading';
-  document.querySelector('.items').appendChild(text);
+  const loadingText = createCustomElement('span', 'loading', 'carregando...');
+  const sectionContainer = document.querySelector('.items');
+  sectionContainer.appendChild(loadingText);
 };
 
 // função para retirá-lo
-const pageLoaded = () =>
-  document
-    .querySelector('.items')
-    .removeChild(document.querySelector('.loading'));
+const pageLoaded = () => {
+  const loadingText = document.querySelector('.loading');
+  loadingText.remove(); 
+};
 
 /**
  * Função responsável por criar e retornar o elemento do produto.
@@ -115,8 +114,6 @@ const addItems = async () => {
   resultadoFetchProducts.results.forEach((elemento) => { 
     const item = createProductItemElement(elemento);
     items.appendChild(item);
-    cartInformation();
-    calcPrice();
   });
 };
 
@@ -125,8 +122,7 @@ const addItemsToShoppingCart = async () => {
   buttons.forEach((elemento) => elemento.addEventListener('click', async (event) => {
     const resultadoFetchItem = await fetchItem(getIdFromProductItem(event.target.parentElement));
     getItems.appendChild(createCartItemElement(resultadoFetchItem));
-  cartInformation();
-  calcPrice();
+    calcPrice();
   }));
 };
 
@@ -145,15 +141,12 @@ function saveItemsToLocalStorage() {
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
   getItems.innerHTML = '';
-  cartInformation();
-  totalPrice();
 });
 
 window.onload = async () => { 
   pageLoading();
-  pageLoaded();
   await addItems();
+  pageLoaded();
   await addItemsToShoppingCart();
   saveItemsToLocalStorage();
-  await totalPrice();
  };
