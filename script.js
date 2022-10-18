@@ -48,21 +48,40 @@ const pageLoaded = () =>
  * @param {string} product.thumbnail - URL da imagem do produto.
  * @returns {Element} Elemento de produto.
  */
-const createProductItemElement = ({ id, title, thumbnail }) => {
+const createProductItemElement = ({ id, title, price, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item_id', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createCustomElement('span', 'item__price', price));
   section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
 };
 
+const cartInformation = () => {
+  const textList = getItems.childNodes;
+  const infoItems = [];
+  textList.forEach((item) => infoItems.push(item.innerText));
+  saveCartItems(JSON.stringify(infoItems));
+};
+
+const calcPrice = () => {
+  const totalPrice = document.querySelector('.total-price');
+  let somaTotal = 0;
+  getItems.childNodes.forEach((itemList) => {
+    somaTotal += Number(itemList.innerText.split('$')[1]);
+  });
+  totalPrice.innerHTML = `Valor Total: $${somaTotal}`;
+};
+
 // Remova o item do carrinho de compras ao clicar nele
 const cartItemClickListener = (e) => {
-  e.target.remove();
+  e.target.remove(getItems);
+  cartInformation();
+  calcPrice();
 };
 
 /**
@@ -94,6 +113,8 @@ const addItems = async () => {
   resultadoFetchProducts.results.forEach((elemento) => { 
     const item = createProductItemElement(elemento);
     items.appendChild(item);
+    cartInformation();
+    calcPrice();
   });
 };
 
@@ -102,6 +123,8 @@ const addItemsToShoppingCart = async () => {
   buttons.forEach((elemento) => elemento.addEventListener('click', async (event) => {
     const resultadoFetchItem = await fetchItem(getIdFromProductItem(event.target.parentElement));
     getItems.appendChild(createCartItemElement(resultadoFetchItem));
+  cartInformation();
+  calcPrice();
   }));
 };
 
@@ -120,6 +143,8 @@ function saveItemsToLocalStorage() {
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
   getItems.innerHTML = '';
+  cartInformation();
+  totalPrice();
 });
 
 window.onload = async () => { 
@@ -128,4 +153,5 @@ window.onload = async () => {
   await addItems();
   await addItemsToShoppingCart();
   saveItemsToLocalStorage();
+  totalPrice();
  };
