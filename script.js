@@ -17,7 +17,18 @@ const createCustomElement = (element, className, innerText) => {
 };
 
 // Adicione um texto de carregando durante uma requisição à API
+const pageLoading = () => {
+  const text = document.createElement('p');
+  text.innerText = 'carregando...';
+  text.className = 'loading';
+  document.querySelector('.items').appendChild(text);
+};
 
+// função para retirá-lo
+const pageLoaded = () =>
+  document
+    .querySelector('.items')
+    .removeChild(document.querySelector('.loading'));
 
 const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
@@ -88,6 +99,8 @@ emptyCart.addEventListener('click', () => {
 });
 
 window.onload = async () => { 
+  pageLoading();
+  pageLoaded();
   await addItems();
   await addItemsToShoppingCart();
   saveItemsToLocalStorage();
